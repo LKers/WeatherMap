@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.weathermap.android.gson.Forecast;
 import com.weathermap.android.gson.Weather;
+import com.weathermap.android.util.HttpUtil;
+import com.weathermap.android.util.Utility;
 
 import java.io.IOException;
 
