@@ -93,24 +93,47 @@ public class WeatherActivity extends AppCompatActivity {
         swipeRefresh.setColorSchemeResources(R.color.colorPrimary);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         navButton = (Button) findViewById(R.id.nav_button);
+/*
+        Intent intent=getIntent();
+        String province=intent.getStringExtra("province");
+        String city=intent.getStringExtra("city");
+        String county=intent.getStringExtra("county");
+*/
+
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather",null);
+        /*
         if(weatherString!=null){
             //有缓存时直接解析天气数据
-            Weather weather = Utility.handleWeatherResponse(weatherString);
-            mWeatherId = weather.basic.weatherId;
-            showWeatherInfo(weather);
+         //   Weather weather = Utility.handleWeatherResponse(weatherString);
+         //   mWeatherId = weather.basic.weatherId;
+         //   showWeatherInfo(weather);
         }
         else {
             //无缓存时去服务器查询天气
-
             mWeatherId = getIntent().getStringExtra("weather_id");
             weatherLayout.setVisibility(View.INVISIBLE);
             requestWeather(mWeatherId);
         }
+        */
+        mWeatherId = getIntent().getStringExtra("weather_id");
+        weatherLayout.setVisibility(View.INVISIBLE);
+        requestWeather(mWeatherId);
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this);
+                String weatherString = prefs.getString("weather",null);
+                if(weatherString!=null){
+                    //有缓存时直接解析天气数据
+                   Weather weather = Utility.handleWeatherResponse(weatherString);
+                    mWeatherId = weather.basic.weatherId;
+                }
+                else {
+                    //无缓存时去服务器查询天气
+                    mWeatherId = getIntent().getStringExtra("weather_id");
+                    weatherLayout.setVisibility(View.INVISIBLE);
+                }
                 requestWeather(mWeatherId);
             }
         });
@@ -192,12 +215,12 @@ public class WeatherActivity extends AppCompatActivity {
             View view = LayoutInflater.from(this).inflate(R.layout.forecast_item,forecastLayout,false);
             TextView dateText = (TextView) view.findViewById(R.id.date_text);
             TextView infoText = (TextView) view.findViewById(R.id.info_text);
-            TextView maxText = (TextView) view.findViewById(R.id.max_text);
-            TextView minText = (TextView) view.findViewById(R.id.min_text);
+            //TextView maxText = (TextView) view.findViewById(R.id.max_text);
+            TextView temperatureText = (TextView) view.findViewById(R.id.temperature_text);
             dateText.setText(forecast.date);
             infoText.setText(forecast.more.info);
-            maxText.setText(forecast.temperature.max);
-            minText.setText(forecast.temperature.min);
+            //maxText.setText(forecast.temperature.max);
+            temperatureText.setText(forecast.temperature.max+"℃ / "+forecast.temperature.min+"℃");
             forecastLayout.addView(view);
         }
         if(weather.aqi != null){
